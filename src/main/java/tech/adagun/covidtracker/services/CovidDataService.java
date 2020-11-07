@@ -33,8 +33,8 @@ public class CovidDataService
     private List<RegionStats> statsList = new ArrayList<>();
 
     @PostConstruct
-    // run once a day
-    @Scheduled(cron = "* * 1 * * *")
+    // run at 15:00 every weekday
+    @Scheduled(cron = "0 0 15 * * 1-5", zone = "Europe/Stockholm")
     public void fetchData() throws IOException, InterruptedException
     {
         downloadData();

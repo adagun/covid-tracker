@@ -9,10 +9,10 @@
 
 </head>
 
-<body>
+<body class="text-center" >
 <div class="container">
-<h1 style="text-align:center" >Covidtracker Sverige</h1>
-<div style="text-align:center" class="jumbotron">
+<h1  >Covidtracker Sverige</h1>
+<div  class="jumbotron">
     <p class="lead">Totalt antal fall</p>
     <h1 class="display-4" th:text="${totalCases}"></h1>
     <p th:text="${'Nya fall rapporterade sedan igår: ' +totalNewCases}"></p>
@@ -34,6 +34,13 @@
                 <td th:text="${regionStat.latestTotalDeaths+ '(' + regionStat.deathsDiffPreviousDay +')'} "></td>
             </tr>
         </table>
+
     </div>
+    <footer class="small" >
+        <p>
+            Data uppdateras vardagar kl 15.00 med data fram till föregående dag.
+            <a href="https://www.folkhalsomyndigheten.se/smittskydd-beredskap/utbrott/aktuella-utbrott/covid-19/aktuellt-epidemiologiskt-lage/" >Läs mer på www.folkhalsomyndigheten.se </a>
+        </p>
+    </footer>
 </body>
 </html>
