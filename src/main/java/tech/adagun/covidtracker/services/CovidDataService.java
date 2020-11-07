@@ -23,7 +23,7 @@ import java.util.List;
 @Service
 public class CovidDataService
 {
-    private static final String DATA_URL ="https://www.arcgis.com/sharing/rest/content/items/b5e7488e117749c19881cce45db13f7e/data";
+    private static final String DATA_URL = "https://www.arcgis.com/sharing/rest/content/items/b5e7488e117749c19881cce45db13f7e/data";
 
     public List<RegionStats> getStatsList()
     {
@@ -38,48 +38,55 @@ public class CovidDataService
     public void fetchData() throws IOException, InterruptedException
     {
         downloadData();
+        String previousDateString;
+        LocalDate currentDate = LocalDate.now();
+        String currentDateString = currentDate.toString();
 
-        String currentDate = LocalDate.now().toString();
-        String previousDate = LocalDate.now().minusDays(1).toString();
+        if (currentDate.getDayOfWeek().toString().equals("MONDAY"))
+        {
+            // get Friday's date
+            previousDateString = currentDate.minusDays(3).toString();
+        } else
+        {
+            previousDateString = currentDate.minusDays(1).toString();
+        }
 
-        XSSFSheet currentDaySheet = getDataSheet(currentDate);
-        XSSFSheet prevoiusDaySheet = getDataSheet(previousDate);
-
+        XSSFSheet currentDaySheet = getDataSheet(currentDateString);
+        XSSFSheet prevoiusDaySheet = getDataSheet(previousDateString);
         List<RegionStats> newStatsList = new ArrayList<>();
 
-        for(int i=1;i<currentDaySheet.getPhysicalNumberOfRows() ;i++)
+        for (int i = 1; i < currentDaySheet.getPhysicalNumberOfRows(); i++)
         {
             XSSFRow currentDayRow = currentDaySheet.getRow(i);
             XSSFRow previousDayRow = prevoiusDaySheet.getRow(i);
             RegionStats regionStat = new RegionStats();
 
             regionStat.setRegion(currentDayRow.getCell(0).getStringCellValue());
-            int latestTotalCases = (int)currentDayRow.getCell(1).getNumericCellValue();
-            int previousTotalCases = (int)previousDayRow.getCell(1).getNumericCellValue();
-            int latestTotalDeaths = (int)currentDayRow.getCell(4).getNumericCellValue();
-            int previousTotalDeaths = (int)previousDayRow.getCell(4).getNumericCellValue();
+            int latestTotalCases = (int) currentDayRow.getCell(1).getNumericCellValue();
+            int previousTotalCases = (int) previousDayRow.getCell(1).getNumericCellValue();
+            int latestTotalDeaths = (int) currentDayRow.getCell(4).getNumericCellValue();
+            int previousTotalDeaths = (int) previousDayRow.getCell(4).getNumericCellValue();
             regionStat.setLatestTotalCases(latestTotalCases);
             regionStat.setLatestTotalDeaths(latestTotalDeaths);
             regionStat.setCasesDiffPreviousDay(latestTotalCases - previousTotalCases);
             regionStat.setDeathsDiffPreviousDay(latestTotalDeaths - previousTotalDeaths);
             newStatsList.add(regionStat);
         }
-           this.statsList = newStatsList;
+        this.statsList = newStatsList;
     }
 
-        private void downloadData() throws IOException
-        {
-            String saveFilePath = "data/"+ LocalDate.now()+".xlsx";
-            InputStream in = new URL(DATA_URL).openStream();
-            Files.copy(in, Paths.get(saveFilePath), StandardCopyOption.REPLACE_EXISTING);
-        }
+    private void downloadData() throws IOException
+    {
+        String saveFilePath = "data/" + LocalDate.now() + ".xlsx";
+        InputStream in = new URL(DATA_URL).openStream();
+        Files.copy(in, Paths.get(saveFilePath), StandardCopyOption.REPLACE_EXISTING);
+    }
 
-        private XSSFSheet getDataSheet(String filename) throws IOException
-        {
-            File myFile = new File("data/"+filename +".xlsx");
-            FileInputStream fis = new FileInputStream(myFile);
-            XSSFWorkbook myWorkBook = new XSSFWorkbook (fis);
-            return myWorkBook.getSheetAt(3);
-        }
-
+    private XSSFSheet getDataSheet(String filename) throws IOException
+    {
+        File myFile = new File("data/" + filename + ".xlsx");
+        FileInputStream fis = new FileInputStream(myFile);
+        XSSFWorkbook myWorkBook = new XSSFWorkbook(fis);
+        return myWorkBook.getSheetAt(3);
+    }
 }
