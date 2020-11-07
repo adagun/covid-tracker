@@ -15,11 +15,11 @@
 <div  class="jumbotron">
     <p class="lead">Totalt antal fall</p>
     <h1 class="display-4" th:text="${totalCases}"></h1>
-    <p th:text="${'Nya fall rapporterade sedan igår: ' +totalNewCases}"></p>
+    <p th:text="${'Nya fall rapporterade sedan föregående dag: ' +totalNewCases}"></p>
     <hr class="my-4">
     <p class="lead">Totalt antal avlidna</p>
     <h1 class="display-4" th:text="${totalDeaths}"></h1>
-    <p th:text="${'Nya dödsfall rapporterade sedan igår: ' + totalNewDeaths}"></p>
+    <p th:text="${'Nya dödsfall rapporterade sedan föregående dag: ' + totalNewDeaths}"></p>
 
     </div>
         <table class="table">
