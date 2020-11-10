@@ -52,13 +52,21 @@ public class CovidDataService
         }
 
         XSSFSheet currentDaySheet = getDataSheet(currentDateString);
-        XSSFSheet prevoiusDaySheet = getDataSheet(previousDateString);
+        XSSFSheet previousDaySheet;
+        try
+        {
+            previousDaySheet = getDataSheet(previousDateString);
+        } catch (IOException e)
+        {
+            previousDaySheet = currentDaySheet;
+        }
+
         List<RegionStats> newStatsList = new ArrayList<>();
 
         for (int i = 1; i < currentDaySheet.getPhysicalNumberOfRows(); i++)
         {
             XSSFRow currentDayRow = currentDaySheet.getRow(i);
-            XSSFRow previousDayRow = prevoiusDaySheet.getRow(i);
+            XSSFRow previousDayRow = previousDaySheet.getRow(i);
             RegionStats regionStat = new RegionStats();
 
             regionStat.setRegion(currentDayRow.getCell(0).getStringCellValue());
